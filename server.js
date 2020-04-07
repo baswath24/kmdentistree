@@ -44,7 +44,13 @@ send_mail = async(data) => {
     let response = await wrapped_send_mail(data);
     return response;
 }
-      
+if (process.env.NODE_ENV === 'production') {
+    // Serve any static files
+    app.use(express.static(path.join(__dirname, 'client/build')));// Handle React routing, return all requests to React app
+    app.get('*', function(req, res) {
+      res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    });
+}      
 app.post('/form', async(req,res)=>{
     const a = await send_mail(req.body);
     console.log("after sending ", a);
